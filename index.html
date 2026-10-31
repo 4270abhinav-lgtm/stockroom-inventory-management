@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f7fb">
+  <title>Stockroom — Inventory</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="#overview" aria-label="Stockroom home"><span class="brand-mark">S</span><span>stockroom</span></a>
+    <div class="nav-label">WORKSPACE</div>
+    <nav aria-label="Main navigation">
+      <a class="nav-link active" href="#overview"><span class="nav-icon">▦</span> Overview</a>
+      <a class="nav-link" href="#products"><span class="nav-icon">▤</span> Products</a>
+      <a class="nav-link" href="#activity"><span class="nav-icon">↕</span> Stock activity</a>
+    </nav>
+    <div class="sidebar-bottom"><div class="help-card"><span class="help-icon">?</span><strong>Need a hand?</strong><p>Keep your stock in sync with every movement.</p></div><div class="user-chip"><div class="avatar">A</div><div><strong>Admin</strong><small>Workspace owner</small></div><span class="more">···</span></div></div>
+  </aside>
+  <main class="main-content">
+    <header class="topbar"><div class="breadcrumb">Workspace <span>/</span> <strong>Inventory</strong></div><div class="top-actions"><span class="today" id="today"></span><button class="icon-button" aria-label="Notifications">♧<i></i></button></div></header>
+    <section id="overview" class="page-heading"><div><div class="eyebrow">INVENTORY MANAGEMENT</div><h1>Good morning, Admin <span class="wave">✳</span></h1><p>Here’s what’s happening with your stock today.</p></div><button class="button primary" id="add-product-btn"><span>＋</span> Add product</button></section>
+    <section class="stats-grid" aria-label="Inventory summary">
+      <article class="stat-card"><div class="stat-top"><span>Total products</span><span class="stat-icon violet">▤</span></div><strong id="stat-products">0</strong><small><span class="muted">Across all categories</span></small></article>
+      <article class="stat-card"><div class="stat-top"><span>Stock units</span><span class="stat-icon blue">▦</span></div><strong id="stat-units">0</strong><small><span class="muted">Units currently in stock</span></small></article>
+      <article class="stat-card"><div class="stat-top"><span>Stock value</span><span class="stat-icon green">₹</span></div><strong id="stat-value">₹0</strong><small><span class="muted">Based on unit cost</span></small></article>
+      <article class="stat-card warning-card"><div class="stat-top"><span>Low stock items</span><span class="stat-icon orange">!</span></div><strong id="stat-low">0</strong><small><span class="muted">At or below reorder level</span></small></article>
+    </section>
+    <section class="content-grid">
+      <article class="panel inventory-panel" id="products"><div class="panel-heading"><div><h2>Inventory</h2><p>Manage and keep track of your products.</p></div><div class="panel-actions"><button class="button secondary" id="backup-btn" title="Download all products and stock history"><span>↓</span> Backup</button><button class="button secondary" id="restore-btn" title="Restore from a Stockroom backup">Restore</button><input id="restore-file" type="file" accept=".json,application/json" hidden><button class="button secondary" id="export-btn" title="Download product list as CSV"><span>↥</span> CSV</button></div></div>
+        <div class="toolbar"><label class="search-box"><span>⌕</span><input id="search-input" type="search" placeholder="Search products..."></label><label class="select-wrap"><span class="sr-only">Category</span><select id="category-filter"><option value="all">All categories</option></select></label><label class="select-wrap"><span class="sr-only">Stock status</span><select id="stock-filter"><option value="all">Any stock</option><option value="low">Low stock</option><option value="out">Out of stock</option><option value="healthy">In stock</option></select></label></div>
+        <div class="table-wrap"><table><thead><tr><th>PRODUCT</th><th>CATEGORY</th><th>UNIT COST</th><th>QUANTITY</th><th>STATUS</th><th><span class="sr-only">Actions</span></th></tr></thead><tbody id="product-rows"></tbody></table><div class="empty-state" id="empty-state"><div class="empty-icon">▤</div><strong>No products found</strong><p>Add a product or adjust your search filters.</p><button class="button primary" id="empty-add-btn">＋ Add your first product</button></div></div>
+        <div class="table-footer"><span id="row-count">Showing 0 products</span><span>Stock data is saved on this device</span></div>
+      </article>
+      <aside class="panel activity-panel" id="activity"><div class="panel-heading"><div><h2>Recent activity</h2><p>Latest stock movements</p></div><span class="activity-live"><i></i> Live</span></div><div class="activity-list" id="activity-list"></div><button class="view-all" id="view-activity-btn">View stock activity <span>→</span></button></aside>
+    </section>
+    <footer class="footer"><span>Stockroom <span class="dot">·</span> Inventory made simple</span><span>All changes saved automatically</span></footer>
+  </main>
+  <dialog id="product-dialog"><form id="product-form" method="dialog"><div class="dialog-heading"><div><div class="eyebrow">PRODUCT DETAILS</div><h2 id="product-dialog-title">Add a product</h2></div><button type="button" class="close-button" data-close aria-label="Close">×</button></div><input type="hidden" id="product-id"><label>Product name<input id="product-name" required maxlength="80" placeholder="e.g. Wireless Mouse"></label><div class="form-grid"><label>SKU<input id="product-sku" maxlength="40" placeholder="e.g. ACC-001"></label><label>Category<input id="product-category" maxlength="40" placeholder="e.g. Accessories"></label></div><div class="form-grid"><label>Unit cost (₹)<input id="product-cost" type="number" min="0" step="0.01" required value="0"></label><label>Quantity<input id="product-quantity" type="number" min="0" step="1" required value="0"></label></div><label>Reorder level<input id="product-reorder" type="number" min="0" step="1" required value="5"><small>We’ll mark the item low when quantity reaches this number.</small></label><div class="dialog-actions"><button type="button" class="button secondary" data-close>Cancel</button><button class="button primary" type="submit">Save product</button></div></form></dialog>
+  <dialog id="movement-dialog"><form id="movement-form" method="dialog"><div class="dialog-heading"><div><div class="eyebrow">STOCK MOVEMENT</div><h2 id="movement-title">Adjust stock</h2></div><button type="button" class="close-button" data-close aria-label="Close">×</button></div><div class="movement-product" id="movement-product"></div><input type="hidden" id="movement-id"><div class="movement-toggle"><label><input type="radio" name="movement-type" value="in" checked><span>Stock in</span></label><label><input type="radio" name="movement-type" value="out"><span>Stock out</span></label></div><label>Quantity<input id="movement-quantity" type="number" min="1" step="1" required placeholder="Enter quantity"></label><label>Reason<input id="movement-reason" maxlength="100" placeholder="e.g. Purchase order, damaged goods"></label><div class="dialog-actions"><button type="button" class="button secondary" data-close>Cancel</button><button class="button primary" type="submit">Record movement</button></div></form></dialog>
+  <dialog id="history-dialog"><div class="history-heading"><div><div class="eyebrow">MOVEMENT LOG</div><h2>Stock activity</h2></div><button type="button" class="close-button" data-close aria-label="Close">×</button></div><div class="history-list" id="history-list"></div></dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
